@@ -5,7 +5,7 @@ import (
 
 	"log"
 
-	handler "github.com/MomsEngineer/scheduler_service/tree/master/api-gateway/handlers"
+	handler "github.com/MomsEngineer/scheduler_service/api_gateway/handlers"
 )
 
 func main() {

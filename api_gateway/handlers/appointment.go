@@ -1,11 +1,11 @@
-package handler
+package handlers
 
 import (
 	"encoding/json"
 	"log"
 	"net/http"
 
-	"github.com/MomsEngineer/scheduler_service/tree/master/api-gateway/models"
+	"github.com/MomsEngineer/scheduler_service/api_gateway/models"
 )
 
 func CreateAppointmentHandler(res http.ResponseWriter, req *http.Request) {
