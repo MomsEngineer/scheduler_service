@@ -19,7 +19,8 @@ func TestAppointments(t *testing.T) {
 		endpoint       string
 		body           []byte
 		expectedStatus int
-		expectedBody   string
+		expectedBody   *models.AppointmentResponse
+		expectedError  *models.APIError
 	}{
 		{
 			name:           "GET request",
@@ -27,7 +28,11 @@ func TestAppointments(t *testing.T) {
 			endpoint:       "/appointments",
 			body:           nil,
 			expectedStatus: http.StatusMethodNotAllowed,
-			expectedBody:   "Only POST requests are allowed!",
+			expectedBody:   nil,
+			expectedError: &models.APIError{
+				Code:    "method_not_allowed",
+				Message: "Only POST requests are allowed",
+			},
 		},
 		{
 			name:           "POST request with empty body",
@@ -35,7 +40,11 @@ func TestAppointments(t *testing.T) {
 			endpoint:       "/appointments",
 			body:           nil,
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   "Failed to parse JSON",
+			expectedBody:   nil,
+			expectedError: &models.APIError{
+				Code:    "invalid_json",
+				Message: "Failed to parse request body",
+			},
 		},
 		{
 			name:           "POST request with wrong body",
@@ -43,15 +52,23 @@ func TestAppointments(t *testing.T) {
 			endpoint:       "/appointments",
 			body:           []byte(`{bad json}`),
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   "Failed to parse JSON",
+			expectedBody:   nil,
+			expectedError: &models.APIError{
+				Code:    "invalid_json",
+				Message: "Failed to parse request body",
+			},
 		},
 		{
 			name:           "POST valid JSON",
 			method:         http.MethodPost,
 			endpoint:       "/appointments",
 			body:           []byte(`{"user_id":"123","doctor_id":"456","datetime":"2025-04-12T10:00:00Z"}`),
-			expectedStatus: http.StatusOK,
-			expectedBody:   `"status":"Created"`,
+			expectedStatus: http.StatusCreated,
+			expectedBody: &models.AppointmentResponse{
+				AppointmentID: "789",
+				Status:        "Created",
+			},
+			expectedError: nil,
 		},
 		{
 			name:           "POST with missing UserID",
@@ -59,7 +76,11 @@ func TestAppointments(t *testing.T) {
 			endpoint:       "/appointments",
 			body:           []byte(`{"doctor_id":"456","datetime":"2025-04-12T10:00:00Z"}`),
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   "Invalid request",
+			expectedBody:   nil,
+			expectedError: &models.APIError{
+				Code:    "validation_error",
+				Message: "Missing required fields",
+			},
 		},
 		{
 			name:           "POST with missing DoctorID",
@@ -67,7 +88,11 @@ func TestAppointments(t *testing.T) {
 			endpoint:       "/appointments",
 			body:           []byte(`{"user_id":"123","datetime":"2025-04-12T10:00:00Z"}`),
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   "Invalid request",
+			expectedBody:   nil,
+			expectedError: &models.APIError{
+				Code:    "validation_error",
+				Message: "Missing required fields",
+			},
 		},
 	}
 
@@ -78,14 +103,15 @@ func TestAppointments(t *testing.T) {
 			handlers.CreateAppointmentHandler(res, req)
 
 			assert.Equal(t, tt.expectedStatus, res.Code)
-			if tt.expectedStatus == http.StatusOK {
-				var respBody models.AppointmentResponse
-				err := json.Unmarshal(res.Body.Bytes(), &respBody)
-				assert.NoError(t, err)
-				assert.Equal(t, "Created", respBody.Status)
-				assert.NotEmpty(t, respBody.AppointmentID)
-			} else if tt.expectedBody != "" {
-				assert.Contains(t, res.Body.String(), tt.expectedBody)
+
+			var respBody models.APIResponse[models.AppointmentResponse]
+			err := json.Unmarshal(res.Body.Bytes(), &respBody)
+			assert.NoError(t, err)
+			if tt.expectedBody != nil {
+				assert.Equal(t, "Created", respBody.Data.Status)
+				assert.NotEmpty(t, respBody.Data.AppointmentID)
+			} else if tt.expectedError != nil {
+				assert.Equal(t, tt.expectedError, respBody.Error)
 			}
 		})
 	}
