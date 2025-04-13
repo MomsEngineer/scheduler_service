@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/MomsEngineer/scheduler_service/api_gateway/models"
+	"github.com/go-playground/validator/v10"
 )
 
 func CreateAppointmentHandler(res http.ResponseWriter, req *http.Request) {
@@ -22,10 +23,16 @@ func CreateAppointmentHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	validate := validator.New()
+	if err := validate.Struct(request); err != nil {
+		http.Error(res, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
 	response := models.AppointmentResponse{
 		AppointmentResponseData: models.AppointmentResponseData{
-			Appointment: "789",
-			Status:      "Created",
+			AppointmentID: "789",
+			Status:        "Created",
 		},
 		Error: nil,
 	}

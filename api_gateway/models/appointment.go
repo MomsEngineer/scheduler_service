@@ -1,14 +1,14 @@
 package models
 
 type AppointmentRequest struct {
-	UserID   string `json:"user_id"`
-	DoctorID string `json:"doctor_id"`
+	UserID   string `json:"user_id" validate:"required"`
+	DoctorID string `json:"doctor_id" validate:"required"`
 	DateTime string `json:"datetime"`
 }
 
 type AppointmentResponseData struct {
-	Appointment string `json:"appointment_id"`
-	Status      string `json:"status"`
+	AppointmentID string `json:"appointment_id"`
+	Status        string `json:"status"`
 }
 
 type AppointmentResponse struct {
