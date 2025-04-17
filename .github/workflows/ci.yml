@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-api-gateway:
-    name: Build API Gateway
+    name: Build & Test API Gateway
     runs-on: ubuntu-latest
 
     steps:
@@ -22,10 +22,18 @@ jobs:
         with:
           go-version: '1.22'
 
-      - name: Build and Test
-        working-directory: api_gateway
+      - name: Build
+        working-directory: ./api-gateway
         run: |
           go mod tidy
           go build -v ./...
+
+      - name: Run tests
+        working-directory: ./api-gateway
+        run: |
           go test -v ./...
+
+      - name: Code coverage
+        working-directory: ./api-gateway
+        run: |
           go test -cover ./...
