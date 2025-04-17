@@ -23,7 +23,7 @@ jobs:
           go-version: '1.22'
 
       - name: Build and Test
-        working-directory: api-gateway
+        working-directory: api_gateway
         run: |
           go mod tidy
           go build -v ./...
