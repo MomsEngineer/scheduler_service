@@ -4,8 +4,8 @@ import (
 	"log"
 	"net"
 
-	"github.com/MomsEngineer/scheduler_service/appointment_service/proto"
 	"github.com/MomsEngineer/scheduler_service/appointment_service/server"
+	"github.com/MomsEngineer/scheduler_service/proto"
 	"google.golang.org/grpc"
 )
 

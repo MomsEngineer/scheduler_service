@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/MomsEngineer/scheduler_service/api_gateway/models"
-	"github.com/MomsEngineer/scheduler_service/api_gateway/proto"
+	"github.com/MomsEngineer/scheduler_service/proto"
 )
 
 func WriteJSON(w http.ResponseWriter, status int, v any) {

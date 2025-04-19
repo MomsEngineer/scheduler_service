@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/MomsEngineer/scheduler_service/api_gateway/models"
-	"github.com/MomsEngineer/scheduler_service/api_gateway/proto"
 	"github.com/MomsEngineer/scheduler_service/api_gateway/utils"
+	"github.com/MomsEngineer/scheduler_service/proto"
 	"github.com/stretchr/testify/assert"
 )
 

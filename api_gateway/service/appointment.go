@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	"github.com/MomsEngineer/scheduler_service/api_gateway/models"
-	"github.com/MomsEngineer/scheduler_service/api_gateway/proto"
 	"github.com/MomsEngineer/scheduler_service/api_gateway/utils"
+	"github.com/MomsEngineer/scheduler_service/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

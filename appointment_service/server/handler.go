@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/MomsEngineer/scheduler_service/appointment_service/proto"
+	"github.com/MomsEngineer/scheduler_service/proto"
 )
 
 type Server struct {

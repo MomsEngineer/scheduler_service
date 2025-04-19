@@ -1,6 +1,6 @@
 module github.com/MomsEngineer/scheduler_service/api_gateway
 
-go 1.22.0
+go 1.22
 
 require (
 	github.com/go-playground/validator/v10 v10.26.0

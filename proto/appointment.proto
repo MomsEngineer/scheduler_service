@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package appointment;
 
-option go_package = "github.com/MomsEngineer/scheduler_service/appointment_service/proto";
+option go_package = "github.com/MomsEngineer/scheduler_service/proto";
 
 service AppointmentService {
 	rpc CreateAppointment(CreateAppointmentRequest) returns (CreateAppointmentResponse);

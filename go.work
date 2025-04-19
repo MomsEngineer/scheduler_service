@@ -1,4 +1,7 @@
 go 1.22.0
 
 use ./appointment_service
+
 use ./api_gateway
+
+use ./proto
