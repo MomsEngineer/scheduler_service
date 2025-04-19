@@ -5,6 +5,7 @@ import (
 	"log"
 	"sync"
 
+	"github.com/MomsEngineer/scheduler_service/api_gateway/config"
 	"github.com/MomsEngineer/scheduler_service/api_gateway/models"
 	"github.com/MomsEngineer/scheduler_service/api_gateway/utils"
 	"github.com/MomsEngineer/scheduler_service/proto"
@@ -25,7 +26,7 @@ var (
 )
 
 func initGRPCClient() {
-	conn, err := grpc.NewClient("localhost:50051",
+	conn, err := grpc.NewClient(config.AppConfig.AppointmentServiceAddr,
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		initErr = err

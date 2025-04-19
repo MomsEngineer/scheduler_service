@@ -5,11 +5,14 @@ import (
 
 	"log"
 
+	"github.com/MomsEngineer/scheduler_service/api_gateway/config"
 	handler "github.com/MomsEngineer/scheduler_service/api_gateway/handlers"
 	"github.com/MomsEngineer/scheduler_service/api_gateway/service"
 )
 
 func main() {
+	config.Init()
+
 	log.Println("main: Start API-Gateway service")
 	mux := http.NewServeMux()
 
