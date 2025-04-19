@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 
@@ -24,17 +25,25 @@ func WriteJSON(w http.ResponseWriter, status int, v any) {
 	w.Write(buf.Bytes())
 }
 
-func ToProto(r *models.AppointmentRequest) *proto.CreateAppointmentRequest {
-	return &proto.CreateAppointmentRequest{
-		UserId:   r.UserID,
-		DoctorId: r.DoctorID,
-		DateTime: r.DateTime,
+func AppointmentRequestToProto(req *models.AppointmentRequest) (*proto.CreateAppointmentRequest, error) {
+	if req == nil {
+		log.Println("ERROR: AppointmentRequestToProto(): request is NIL")
+		return nil, errors.New("request is nil")
 	}
+	return &proto.CreateAppointmentRequest{
+		UserId:   req.UserID,
+		DoctorId: req.DoctorID,
+		DateTime: req.DateTime,
+	}, nil
 }
 
-func FromProto(res *proto.CreateAppointmentResponse) *models.AppointmentResponse {
+func ProtoToAppointmentResponse(res *proto.CreateAppointmentResponse) (*models.AppointmentResponse, error) {
+	if res == nil {
+		log.Println("ERROR: ProtoToAppointmentResponse(): response is NIL")
+		return nil, errors.New("response is nil")
+	}
 	return &models.AppointmentResponse{
 		AppointmentID: res.AppointmentId,
 		Status:        res.Status,
-	}
+	}, nil
 }
