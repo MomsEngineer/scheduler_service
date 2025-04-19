@@ -1,0 +1,7 @@
+*.go
+!main.go
+vendor/
+.git/
+*.test
+*.md
+*.log
