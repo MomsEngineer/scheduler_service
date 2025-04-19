@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  api_gateway:
+    build:
+      context: ./api_gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - appointment_service
+    environment:
+      - APPOINTMENT_SERVICE_ADDR=appointment_service:50051
+
+  appointment_service:
+    build:
+      context: ./appointment_service
+    ports:
+      - "50051:50051"

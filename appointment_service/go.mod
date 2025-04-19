@@ -2,7 +2,10 @@ module github.com/MomsEngineer/scheduler_service/appointment_service
 
 go 1.22.0
 
-require google.golang.org/grpc v1.71.1
+require (
+	github.com/MomsEngineer/scheduler_service/proto v0.0.0-20250419193941-86eb28216c35
+	google.golang.org/grpc v1.71.1
+)
 
 require (
 	golang.org/x/net v0.34.0 // indirect
