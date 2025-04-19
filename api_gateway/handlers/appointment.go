@@ -11,7 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func CreateAppointmentHandler(res http.ResponseWriter, req *http.Request) {
+func CreateAppointmentHandler(res http.ResponseWriter, req *http.Request, srv service.AppointmentCreator) {
 	if req.Method != http.MethodPost {
 		utils.WriteJSON(res, http.StatusMethodNotAllowed, models.APIResponse[any]{
 			Error: &models.APIError{
@@ -46,7 +46,7 @@ func CreateAppointmentHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	responseData, err := service.CreateAppointment(&request)
+	responseData, err := srv.CreateAppointment(&request)
 	if err != nil {
 		utils.WriteJSON(res, http.StatusInternalServerError, models.APIResponse[any]{
 			Error: &models.APIError{

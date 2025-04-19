@@ -6,6 +6,7 @@ import (
 	"log"
 
 	handler "github.com/MomsEngineer/scheduler_service/api_gateway/handlers"
+	"github.com/MomsEngineer/scheduler_service/api_gateway/service"
 )
 
 func main() {
@@ -13,7 +14,11 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc(`/healthz`, handler.Healthz)
-	mux.HandleFunc(`/appointments`, handler.CreateAppointmentHandler)
+
+	svc := &service.GRPCAppointmentService{}
+	mux.HandleFunc(`/appointments`, func(w http.ResponseWriter, r *http.Request) {
+		handler.CreateAppointmentHandler(w, r, svc)
+	})
 
 	err := http.ListenAndServe(`:8080`, mux)
 	if err != nil {

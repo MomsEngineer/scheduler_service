@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/MomsEngineer/scheduler_service/api_gateway/handlers"
+	"github.com/MomsEngineer/scheduler_service/api_gateway/mock"
 	"github.com/MomsEngineer/scheduler_service/api_gateway/models"
 	"github.com/stretchr/testify/assert"
 )
@@ -100,7 +101,7 @@ func TestAppointments(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := httptest.NewRequest(tt.method, tt.endpoint, bytes.NewBuffer(tt.body))
 			res := httptest.NewRecorder()
-			handlers.CreateAppointmentHandler(res, req)
+			handlers.CreateAppointmentHandler(res, req, &mock.MockService{})
 
 			assert.Equal(t, tt.expectedStatus, res.Code)
 
