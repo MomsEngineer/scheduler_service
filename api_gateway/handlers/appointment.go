@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/MomsEngineer/scheduler_service/api_gateway/models"
+	"github.com/MomsEngineer/scheduler_service/api_gateway/service"
 	"github.com/MomsEngineer/scheduler_service/api_gateway/utils"
 	"github.com/go-playground/validator/v10"
 )
@@ -45,11 +46,19 @@ func CreateAppointmentHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	responseData, err := service.CreateAppointment(&request)
+	if err != nil {
+		utils.WriteJSON(res, http.StatusInternalServerError, models.APIResponse[any]{
+			Error: &models.APIError{
+				Code:    "grpc_error",
+				Message: "Failed to create an appointment",
+			},
+		})
+		return
+	}
+
 	response := models.APIResponse[models.AppointmentResponse]{
-		Data: &models.AppointmentResponse{
-			AppointmentID: "789",
-			Status:        "Created",
-		},
+		Data: responseData,
 	}
 
 	utils.WriteJSON(res, http.StatusCreated, response)

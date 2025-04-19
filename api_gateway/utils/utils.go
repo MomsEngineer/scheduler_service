@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/MomsEngineer/scheduler_service/api_gateway/models"
+	"github.com/MomsEngineer/scheduler_service/api_gateway/proto"
 )
 
 func WriteJSON(w http.ResponseWriter, status int, v any) {
@@ -19,4 +22,19 @@ func WriteJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	w.Write(buf.Bytes())
+}
+
+func ToProto(r *models.AppointmentRequest) *proto.CreateAppointmentRequest {
+	return &proto.CreateAppointmentRequest{
+		UserId:   r.UserID,
+		DoctorId: r.DoctorID,
+		DateTime: r.DateTime,
+	}
+}
+
+func FromProto(res *proto.CreateAppointmentResponse) *models.AppointmentResponse {
+	return &models.AppointmentResponse{
+		AppointmentID: res.AppointmentId,
+		Status:        res.Status,
+	}
 }
