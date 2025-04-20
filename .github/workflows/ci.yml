@@ -91,10 +91,10 @@ jobs:
       - name: Check Docker version
         run: |
             docker --version
-            docker-compose --version
+            docker compose --version
 
       - name: Start docker-compose
-        run: docker-compose up --build -d
+        run: docker compose up --build -d
 
       - name: Wait for services to be ready
         run: |
