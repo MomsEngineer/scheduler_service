@@ -9,31 +9,105 @@ on:
       - master
 
 jobs:
-  build-api-gateway:
-    name: Build & Test API Gateway
+  build-all:
+    name: Build All Services
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
 
-      - name: Build
+      - name: Build api_gateway
         working-directory: api_gateway
         run: |
           go mod tidy
           go build -v ./...
 
-      - name: Run tests
-        working-directory: api_gateway
+      - name: Build appointment_service
+        working-directory: appointment_service
         run: |
-          go test -v ./...
+          go mod tidy
+          go build -v ./...
 
-      - name: Code coverage
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: build-all
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Run unit tests (api_gateway)
         working-directory: api_gateway
+        run: go test -v ./...
+
+      - name: Run unit tests (appointment_service)
+        working-directory: appointment_service
+        run: go test -v ./...
+
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Run code coverage (api_gateway)
+        working-directory: api_gateway
+        run: go test -cover ./...
+
+      - name: Run code coverage (appointment_service)
+        working-directory: appointment_service
+        run: go test -cover ./...
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: build-all
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Check Docker version
         run: |
-          go test -cover ./...
+            docker --version
+            docker-compose --version
+
+      - name: Start docker-compose
+        run: docker-compose up --build -d
+
+      - name: Wait for services to be ready
+        run: |
+          for i in {1..10}; do
+            curl -s http://localhost:8080/healthz && exit 0 || sleep 2
+          done
+          echo "❌ Services did not start in time"
+          docker-compose logs
+          exit 1
+
+      - name: Run integration tests
+        run: go test -v -tags=integration ./tests/integration
+
+      - name: Stop docker-compose
+        if: always()
+        run: docker-compose down

@@ -4,4 +4,7 @@ use ./appointment_service
 
 use ./api_gateway
 
-use ./proto
+use (
+	./proto
+	./tests/integration
+)
